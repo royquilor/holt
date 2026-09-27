@@ -8,7 +8,9 @@ import {
   FileTextIcon,
   FrameIcon,
   FlagIcon,
+  GitPullRequestIcon,
   LayersIcon,
+  ListChecksIcon,
   LayoutGridIcon,
   LibraryIcon,
   LightbulbIcon,
@@ -26,7 +28,7 @@ import {
  * Sidebar map for Holt.
  * Harness sits at the top so every run starts with the workshop, not a vendor.
  */
-export type GroupId = "harness" | "ideate" | "design" | "develop"
+export type GroupId = "harness" | "ideate" | "design" | "develop" | "ship"
 
 export type CatalogItem = {
   slug: string
@@ -38,6 +40,8 @@ export type CatalogItem = {
   must: string[]
   never: string[]
   connects: string
+  /** Paste-ready check. Set on Ship topics the author runs before a pull request. */
+  prompt?: string
 }
 
 export type CatalogGroup = {
@@ -72,7 +76,7 @@ export const catalog: CatalogGroup[] = [
           "Skip review because the preview 'looks fine'.",
         ],
         connects:
-          "Ideate decides if the job is worth doing. Design locks taste. Develop is the allowlisted stack. Review scores drift.",
+          "Ideate decides if the job is worth doing. Design locks taste. Develop is the allowlisted stack. Ship is the check before a pull request, when the author does not fully read the code.",
       },
       {
         slug: "rules",
@@ -114,7 +118,7 @@ export const catalog: CatalogGroup[] = [
           "Call a screen done without a review pass.",
         ],
         connects:
-          "Same idea as a Sentry harness with I (investigate) vs F (fix). Your flags are ideate, design, build, review.",
+          "Same idea as a Sentry harness with I (investigate) vs F (fix). Your flags are ideate, design, build, review. Ship is that review, before the pull request.",
       },
     ],
   },
@@ -457,6 +461,95 @@ export const catalog: CatalogGroup[] = [
           "Hide a payment link in a Reddit comment (portfolio rule).",
         ],
         connects: "Clerk is who. Polar is paid. Convex remembers. This page is the contract; the SDK waits for a billing feature.",
+      },
+    ],
+  },
+  {
+    id: "ship",
+    label: "Ship",
+    hint: "Before the pull request, when you do not fully read the code",
+    items: [
+      {
+        slug: "reach",
+        title: "Reach",
+        href: "/ship/reach",
+        icon: GitPullRequestIcon,
+        summary:
+          "The score before a pull request. Contained, Spreads, or Rewrites. It says how many screens change when this merges.",
+        why: "Confidence in the component does not answer the reviewer. A new button sounds like every button in the app. If you cannot say whether this edit touches the shared file, the reviewer has to research the whole diff, and a PM will still ask why it is not already shipped.",
+        must: [
+          "Check the label before you open the pull request.",
+          "Contained: a new file nothing imports yet. Merge changes nothing a user can click.",
+          "Spreads: name the screens. None of them may be submit, pay, or delete.",
+          "Rewrites: stop. This edits a shared component the app already uses. List every import, then try one low-risk screen.",
+          "Say four things: what changed, what does not change on merge, where to try it, where to hold.",
+        ],
+        never: [
+          "Open the pull request on Rewrites because the preview looks right.",
+          "Explain the implementation. Explain reach, and what the click does now.",
+          "Try the new component first on checkout, billing, sign-in, or a confirm dialog.",
+          "Call the risk 'AI code'. The risk is how many screens change, and whether a dead click submits, pays, or deletes.",
+        ],
+        connects:
+          "Level up is the prompt that reads the diff and picks the label. House rules still ban a second Button. This page is how you prove you did not silently edit the one the app already uses.",
+      },
+      {
+        slug: "level-up",
+        title: "Level up",
+        href: "/ship/level-up",
+        icon: ListChecksIcon,
+        summary:
+          "A prompt you paste before the pull request. It names the label, the risks, and the few things you should be able to explain.",
+        why: "You do not need every line. You need the 80/20: did this edit the shared file, what the click does now, which screens import it, and what you left alone. The prompt pulls that out of the diff so you can say it in review.",
+        must: [
+          "Paste the prompt on the branch you are about to open.",
+          "Read the label. If it says Rewrites, do not open the pull request yet.",
+          "Keep the three to five level-up lines. Those are what you learn this time.",
+          "Put the pull-request sentences in the description so the reviewer does not reconstruct reach.",
+        ],
+        never: [
+          "Ask the writing agent 'is this fine?' without this prompt. It will agree with itself.",
+          "Accept an answer that explains the whole component. Send it back and ask for the 80/20 only.",
+          "Hide a Rewrites result because the PM wants it today. The card is how the team stays aligned.",
+        ],
+        connects:
+          "Reach is what Contained, Spreads, and Rewrites mean. This prompt is the check that produces the label.",
+        prompt: `You are reviewing a change the author is about to open as a pull request. They can see that the UI does what they want. They do not fully understand the code. Write for them, for the reviewer, and for a PM. Short sentences. No framework lecture.
+
+Read the diff and the files it touches. Then answer only this:
+
+1. Label
+Pick one: Contained, Spreads, or Rewrites.
+- Contained: a new file, or an edit nothing else imports. Merge changes no screen a user can click.
+- Spreads: a listed handful of screens will change. Name each file or route.
+- Rewrites: this edits a shared component, or swaps an import the app already uses. Every screen that imports it changes on deploy.
+
+2. Reach
+- Shared file edited, or new file?
+- How many files import the old thing, and how many import the new thing?
+- What actually changes on merge?
+
+3. Hold
+Name screens or flows where a dead click loses money or data: submit, pay, delete confirm, sign-in. Say whether this change touches them.
+
+4. First try
+Name one low-risk place to use it. Not a submit, not a confirm, not a payment. If you cannot find one, say so.
+
+5. Risks
+At most five. Each is one sentence a PM can read. Skip style nits. Include behaviour that changed (click, disabled, loading, submit), unknown call sites, and anything you cannot judge from the diff.
+
+6. What to level up on
+The 80/20 only. Three to five things the author should be able to say before review, in their own words. Not every line. For a component, that is usually: did I edit the shared file or add a second one, what the click does now, which screens import it, and what I deliberately left alone.
+Skip API trivia that does not change reach or behaviour.
+
+7. Sentences for the pull request
+Write the note the author can paste:
+- What I added or edited.
+- What does not change when this merges.
+- Where we will try it first.
+- Where we will not put it yet.
+
+If the label is Rewrites, say stop: list the call sites before opening the pull request.`,
       },
     ],
   },

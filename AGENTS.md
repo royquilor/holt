@@ -14,7 +14,7 @@ Designer-built web app. Prefer working UI over clever architecture.
 
 ## Product
 
-A handbook shell that explains the harness (ideate → design → develop) and the allowlisted stack. This repo is also the first test of the harness: new features must reuse the sidebar, cards, and tokens already here.
+A handbook shell that explains the harness (ideate → design → develop → ship) and the allowlisted stack. This repo is also the first test of the harness: new features must reuse the sidebar, cards, and tokens already here.
 
 ## Stack (do not change without asking)
 
@@ -30,7 +30,7 @@ Name the mode in the first line of a prompt.
 - **Ideate** — evidence and copy in the catalog. Do not add routes that write app data.
 - **Design** — tokens and `design.md`. Do not add npm packages.
 - **Build** — search `components/ui` and shadcn MCP first. Reuse Card, Badge, Sidebar, Empty, Button.
-- **Review** — list token violations, new CSS files, new vendors, and one-off spacing.
+- **Review** — list token violations, new CSS files, new vendors, and one-off spacing. Before a pull request, run the prompt on Ship → Level up. Do not open the pull request if the label is Rewrites.
 
 ## How to work
 

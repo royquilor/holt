@@ -1,5 +1,6 @@
 import Link from "next/link"
 
+import { CopyPrompt } from "@/components/copy-prompt"
 import { type CatalogGroup, type CatalogItem, nextItem } from "@/lib/catalog"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
@@ -105,6 +106,20 @@ export function TopicView({
           <p className="leading-relaxed text-pretty">{item.connects}</p>
         </CardContent>
       </Card>
+
+      {item.prompt ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Prompt</CardTitle>
+            <CardDescription>
+              Paste this on the branch before you open the pull request.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <CopyPrompt text={item.prompt} />
+          </CardContent>
+        </Card>
+      ) : null}
 
       {next ? (
         <div className="flex flex-col gap-2">

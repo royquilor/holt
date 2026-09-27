@@ -19,7 +19,7 @@ export default function HoltLayout({
           <SidebarTrigger />
           <Separator orientation="vertical" />
           <p className="text-sm text-muted-foreground">
-            Ideate, design, develop — with the harness on top.
+            Ideate, design, develop, then ship — with the harness on top.
           </p>
         </header>
         <div className="flex flex-1 flex-col">{children}</div>
