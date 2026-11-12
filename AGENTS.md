@@ -45,3 +45,9 @@ Name the mode in the first line of a prompt.
 - Spacing and type from existing tokens only. No `p-[13px]`, no raw hex, no extra CSS files.
 - Mobile first. Empty states use `Empty`.
 - No lorem. Copy stays in `lib/catalog.ts`.
+
+## Roadmap
+
+- `roadmap.md` is the short index a session reads first: live status, next, open questions. Keep it under about 80 lines / 6 KB.
+- Detail goes in `roadmap/`: `log/YYYY-MM-DD.md` for sessions, `done.md`, `decisions.md`, and `NN-topic.md` for plans that last more than a day. Read those only when the task needs them.
+- Edit status lines in place. Never stack a new "Resume here" section. Tick or delete items when done.
